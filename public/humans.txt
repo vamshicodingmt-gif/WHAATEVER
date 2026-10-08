@@ -1,0 +1,15 @@
+/* TEAM */
+  Project: WHAATEVER — the anonymous posting platform
+  Site: https://whaatever.vercel.app
+  Contact: the feed itself (there is no inbox here)
+
+/* THANKS */
+  Every ghost who ever posted the honest version.
+
+/* SITE */
+  Last update: 2026-10-08
+  Language: English
+  Doctype: HTML5
+  Architecture: 100% client-side rendered SPA (Vite + React + TypeScript + Tailwind CSS)
+  Storage: browser localStorage — no backend, no database, no analytics
+  Hosting: Vercel static

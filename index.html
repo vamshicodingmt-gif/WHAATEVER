@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- ============================================================
+         PRIMARY SEO — hardcoded so search crawlers that never execute
+         JavaScript still receive the full, keyword-optimised payload.
+         Everything below is tagged data-rh="true" which means
+         react-helmet-async adopts (and upgrades) these tags per route.
+         ============================================================ -->
+    <title data-rh="true">WHAATEVER | The Ultimate Anonymous Posting &amp; Confession Platform</title>
+    <meta
+      data-rh="true"
+      name="description"
+      content="Welcome to WHAATEVER at WHAATEVER.VERCEL.APP — the ultimate anonymous posting platform for unfiltered rants, secrets, and thoughts. Post instantly with zero logins required."
+    />
+    <meta
+      data-rh="true"
+      name="keywords"
+      content="WHAATEVER, WHAATEVER.VERCEL.APP, anonymous posting, confession platform, unfiltered thoughts, public rants, micro-blogging, anonymous text and image sharing"
+    />
+    <meta data-rh="true" name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta data-rh="true" name="googlebot" content="index, follow" />
+    <meta data-rh="true" name="author" content="WHAATEVER" />
+    <meta data-rh="true" name="publisher" content="WHAATEVER.VERCEL.APP" />
+    <meta data-rh="true" name="rating" content="general" />
+    <meta data-rh="true" name="theme-color" content="#FACC15" />
+    <meta data-rh="true" name="application-name" content="WHAATEVER" />
+    <meta data-rh="true" name="apple-mobile-web-app-title" content="WHAATEVER" />
+    <meta data-rh="true" name="apple-mobile-web-app-capable" content="yes" />
+    <meta data-rh="true" name="mobile-web-app-capable" content="yes" />
+    <meta data-rh="true" name="format-detection" content="telephone=no" />
+    <link data-rh="true" rel="canonical" href="https://whaatever.vercel.app/" />
+
+    <!-- Open Graph -->
+    <meta data-rh="true" property="og:site_name" content="WHAATEVER" />
+    <meta data-rh="true" property="og:locale" content="en_US" />
+    <meta data-rh="true" property="og:type" content="website" />
+    <meta data-rh="true" property="og:title" content="WHAATEVER | The Ultimate Anonymous Posting &amp; Confession Platform" />
+    <meta
+      data-rh="true"
+      property="og:description"
+      content="Welcome to WHAATEVER at WHAATEVER.VERCEL.APP — the ultimate anonymous posting platform for unfiltered rants, secrets, and thoughts. Post instantly with zero logins required."
+    />
+    <meta data-rh="true" property="og:url" content="https://whaatever.vercel.app/" />
+    <meta data-rh="true" property="og:image" content="https://whaatever.vercel.app/og-image.png" />
+    <meta data-rh="true" property="og:image:secure_url" content="https://whaatever.vercel.app/og-image.png" />
+    <meta data-rh="true" property="og:image:type" content="image/png" />
+    <meta data-rh="true" property="og:image:width" content="1200" />
+    <meta data-rh="true" property="og:image:height" content="630" />
+    <meta data-rh="true" property="og:image:alt" content="WHAATEVER — the anonymous posting platform for unfiltered thoughts, rants and confessions." />
+
+    <!-- Twitter / X -->
+    <meta data-rh="true" name="twitter:card" content="summary_large_image" />
+    <meta data-rh="true" name="twitter:site" content="@whaatever" />
+    <meta data-rh="true" name="twitter:creator" content="@whaatever" />
+    <meta data-rh="true" name="twitter:domain" content="whaatever.vercel.app" />
+    <meta data-rh="true" name="twitter:title" content="WHAATEVER | The Ultimate Anonymous Posting &amp; Confession Platform" />
+    <meta
+      data-rh="true"
+      name="twitter:description"
+      content="Post anonymously, instantly, with zero logins. WHAATEVER.VERCEL.APP is the unfiltered anonymous confession board and micro-blogging community."
+    />
+    <meta data-rh="true" name="twitter:image" content="https://whaatever.vercel.app/og-image.png" />
+    <meta data-rh="true" name="twitter:image:alt" content="WHAATEVER — anonymous posting platform, confession board and unfiltered micro-blogging community." />
+
+    <!-- Crawler + PWA assets -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="/og-image.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured data: site-level entities (upgraded per route at runtime). -->
+    <script data-rh="true" type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://whaatever.vercel.app/#website",
+            "url": "https://whaatever.vercel.app/",
+            "name": "WHAATEVER",
+            "alternateName": ["WHAATEVER.VERCEL.APP", "WHAATEVER Anonymous"],
+            "description": "WHAATEVER is an anonymous posting platform, online confession board and unfiltered micro-blogging community. Post rants, secrets and thoughts instantly with zero logins required.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://whaatever.vercel.app/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": { "@type": "EntryPoint", "urlTemplate": "https://whaatever.vercel.app/trending?q={search_term_string}" },
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://whaatever.vercel.app/#organization",
+            "name": "WHAATEVER",
+            "url": "https://whaatever.vercel.app/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://whaatever.vercel.app/og-image.png",
+              "width": 1200,
+              "height": 630
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://whaatever.vercel.app/#webapp",
+            "name": "WHAATEVER",
+            "url": "https://whaatever.vercel.app/",
+            "applicationCategory": "SocialNetworkingApplication",
+            "operatingSystem": "Any modern browser",
+            "browserRequirements": "Requires JavaScript (100% client-side rendered SPA)",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "description": "A 100% client-side anonymous posting platform with a live confession feed, image attachments, upvotes and comments. No accounts, no logins, no backend.",
+            "featureList": [
+              "Anonymous posting as a ghost handle",
+              "Optional named or pseudonymous posting",
+              "Unfiltered rants, confessions, secrets and hot takes",
+              "Instant image attachments with client-side compression",
+              "Upvotes and threaded comment drawers",
+              "100% client-side storage — zero backend, zero logins"
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!--
+      ============================================================
+      CRAWLER / NO-JAVASCRIPT FALLBACK
+      ============================================================
+      WHAATEVER is a 100% client-side rendered SPA, so this static
+      markup guarantees that search engines and text browsers still
+      receive semantic landmarks, keyword-rich headings and crawlable
+      internal links even when JavaScript is disabled.
+    -->
+    <noscript>
+      <div style="font-family: Inter, system-ui, sans-serif; max-width: 960px; margin: 0 auto; padding: 32px 20px; color: #0a0a0a">
+        <header style="border: 4px solid #000; box-shadow: 10px 10px 0 0 #000; padding: 20px; background: #fff">
+          <p style="background: #facc15; border: 3px solid #000; display: inline-block; padding: 4px 10px; margin: 0; font-weight: 800">
+            100% ANONYMOUS · ZERO LOGINS REQUIRED
+          </p>
+          <h1 style="font-size: 40px; margin: 12px 0 4px; letter-spacing: -1px">WHAATEVER</h1>
+          <h2 style="font-size: 20px; margin: 0 0 12px">Live Anonymous Feed &amp; Confessions</h2>
+          <p style="line-height: 1.6">
+            WHAATEVER is the anonymous posting platform at
+            <strong>WHAATEVER.VERCEL.APP</strong> for unfiltered thoughts and rants. Post anonymously online, spill your
+            secrets on the internet's most honest confession board, and read anonymous micro-blogging from a live
+            community — no account, no sign-up, no email, no tracking.
+          </p>
+        </header>
+
+        <main style="margin-top: 28px">
+          <article style="border: 3px solid #000; padding: 18px; margin-bottom: 18px; background: #fdfbf7">
+            <h3 style="margin: 0 0 8px">Post anonymously in seconds</h3>
+            <p style="margin: 0 0 12px; line-height: 1.6">
+              Open <a href="https://whaatever.vercel.app/">WHAATEVER</a> in a JavaScript-enabled browser to publish a
+              confession, rant, hot take or anonymous image instantly to the live anonymous feed.
+            </p>
+            <ul style="line-height: 1.7; margin: 0; padding-left: 20px">
+              <li>Ghost Mode — post as the Anonymous Whaatever Ghost, or attach a custom name / pseudonym.</li>
+              <li>Instant image attachments, compressed 100% inside your browser.</li>
+              <li>Upvote, comment and share every confession on the community feed.</li>
+              <li>Everything is stored locally in your browser — there is no backend and no database.</li>
+            </ul>
+          </article>
+
+          <nav style="border: 3px solid #000; padding: 18px; background: #fff">
+            <h3 style="margin: 0 0 10px">Explore WHAATEVER</h3>
+            <ul style="line-height: 1.9; margin: 0; padding-left: 20px">
+              <li><a href="https://whaatever.vercel.app/">The live anonymous feed &amp; confessions</a></li>
+              <li><a href="https://whaatever.vercel.app/trending">Trending anonymous posts &amp; rants</a></li>
+              <li><a href="https://whaatever.vercel.app/about">About the anonymous posting platform</a></li>
+              <li><a href="https://whaatever.vercel.app/guidelines">Community guidelines for unfiltered thoughts</a></li>
+              <li><a href="https://whaatever.vercel.app/privacy">Privacy: how your data stays in your browser</a></li>
+              <li><a href="/sitemap.xml">sitemap.xml</a> · <a href="/robots.txt">robots.txt</a></li>
+            </ul>
+          </nav>
+        </main>
+
+        <footer style="margin-top: 28px; border-top: 4px solid #000; padding-top: 12px">
+          <p style="font-size: 13px">
+            WHAATEVER.VERCEL.APP — anonymous posting platform, online confession board, unfiltered thoughts and rants,
+            anonymous micro-blogging. JavaScript is required for the interactive experience.
+          </p>
+        </footer>
+      </div>
+    </noscript>
+
+    <style>
+      /* First-paint paint job: the brutalist shell is visible before React boots. */
+      #root:empty::before {
+        content: 'WHAATEVER';
+        display: block;
+        padding: 40px 20px;
+        font-family: 'Archivo Black', Impact, system-ui, sans-serif;
+        font-size: 13vw;
+        line-height: 0.9;
+        color: #0a0a0a;
+        letter-spacing: -0.02em;
+      }
+    </style>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
