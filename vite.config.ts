@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 /**
@@ -8,8 +8,11 @@ import react from '@vitejs/plugin-react';
  * app needs is compiled into `dist/` as plain static files, which is why it can
  * be dropped onto Vercel (or any static host / CDN) with zero configuration.
  *
+ * This file intentionally imports ONLY from `vite` so that a production build
+ * never depends on test tooling being installed (see `vitest.config.ts`).
+ *
  * SPA fallback routing is handled by `vercel.json` -> `rewrites` so that deep
- * links such as /trending or /post/<id> resolve to index.html.
+ * links such as /trending or /#post-<id> resolve to index.html.
  */
 export default defineConfig({
   plugins: [react()],
@@ -22,7 +25,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: false,
-    // Allow the Arena / E2B style preview hosts to talk to the dev server.
+    // Allow proxied preview hosts (Arena / E2B style) to reach the dev server.
     allowedHosts: true,
     cors: true,
     hmr: {
@@ -34,14 +37,6 @@ export default defineConfig({
     port: 4173,
     strictPort: false,
     allowedHosts: true,
-  },
-  test: {
-    environment: 'jsdom',
-    globals: false,
-    setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
-    css: false,
-    restoreMocks: true,
   },
   build: {
     outDir: 'dist',

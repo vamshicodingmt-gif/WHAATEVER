@@ -7,12 +7,17 @@ Every file required to build and run WHAATEVER. No placeholders, no `// insert c
 | File | Purpose |
 | --- | --- |
 | `index.html` | CSR host document: hardcoded keyword-optimised `<title>`/description/keywords, Open Graph + Twitter Card tags (all `data-rh="true"` so Helmet adopts them), canonical, fonts, `WebSite`/`Organization`/`WebApplication` JSON-LD, and a full semantic `<noscript>` SEO fallback document. |
-| `package.json` | Dependencies (`react`, `react-dom`, `react-router-dom`, `react-helmet-async`, `lucide-react`, `clsx`, `tailwind-merge`) plus dev tooling (`vite`, `typescript`, `tailwindcss`, `postcss`, `autoprefixer`, `vitest`, `jsdom`, Testing Library) and scripts: `dev`, `build`, `preview`, `typecheck`, `test`. |
-| `vite.config.ts` | CSR build config, `@/` path alias, vendor chunking, dev/preview host binding for proxied previews, and the Vitest (jsdom) environment. |
+| `package.json` | Dependencies (`react`, `react-dom`, `react-router-dom`, `react-helmet-async`, `lucide-react`, `clsx`, `tailwind-merge`) plus dev tooling (`vite`, `typescript`, `tailwindcss`, `postcss`, `autoprefixer`, `vitest`, `jsdom`, Testing Library, `@vercel/routing-utils`) and scripts: `dev`, `build` (`vite build`, deploy-safe), `preview`, `typecheck`, `test`, `verify:deploy`, `verify`, `clean`. Declares `engines.node`. |
+| `vite.config.ts` | CSR build config, `@/` path alias, vendor chunking, dev/preview host binding for proxied previews. Imports **only** from `vite` so the production build never needs test tooling (critical for Vercel). |
+| `vitest.config.ts` | Test-only config (jsdom environment, setup file, `@/` alias) split out of `vite.config.ts` for exactly that reason. |
+| `.nvmrc` | Pins Node 20 for the Vercel build image (Vite 5 needs 18.18+/20.9+). |
+| `DEPLOY.md` | Vercel runbook: the production-branch gotcha, exact project settings, verification steps, and a symptom → cause → fix troubleshooting table. |
+| `scripts/verify-deploy.mjs` | Deployment preflight (`npm run verify:deploy`): validates `vercel.json` with Vercel's own `@vercel/routing-utils`, simulates the filesystem→rewrite routing table against the real `dist/`, asserts every crawler/social asset and referenced bundle file exists, checks the prerendered SEO payload, and cross-checks `sitemap.xml`/`robots.txt` against the canonical domain. |
+| `.github/workflows/ci.yml` | CI gate on every push/PR: `npm ci` → typecheck → tests → production build → deploy preflight. |
 | `tailwind.config.js` | New Brutalist design tokens: cobalt/lemon/olive/beige/ink palettes, `border-3/4/5/6`, `shadow-brutal*` (including the spec'd `4px 4px 0 0 rgba(0,0,0,1)`), animations and keyframes. |
 | `postcss.config.js` | Tailwind + autoprefixer pipeline. |
-| `tsconfig.json` | Strict TypeScript, `jsx: react-jsx`, bundler resolution, `@/*` paths. |
-| `vercel.json` | Zero-config Vercel deployment: SPA rewrites to `index.html`, immutable `/assets/*` caching, security headers. |
+| `tsconfig.json` | Strict TypeScript (incl. `noUnusedLocals`), `jsx: react-jsx`, bundler resolution, `@/*` paths; includes `src`, `vite.config.ts` and `vitest.config.ts`. |
+| `vercel.json` | Vercel deployment config using only canonical patterns: catch-all SPA rewrite to `/index.html` (filesystem is checked first, so assets still resolve), immutable `/assets/*` caching, correct `Content-Type` for `sitemap.xml` and `site.webmanifest`, and security headers. Validated by `npm run verify:deploy` with Vercel's own routing library. |
 | `.gitignore` | Standard Node/Vite/Vercel ignores (keeps `dist` and `node_modules` out of Git). |
 | `README.md` | Full documentation: architecture, design system, features, SEO, scripts, deploy steps, data model, tests. |
 | `PROJECT_FILES.md` | This manifest. |
@@ -68,6 +73,13 @@ Every file required to build and run WHAATEVER. No placeholders, no `// insert c
 | `pages/NotFound.tsx` | noindex brutalist 404 with recovery links. |
 | `test/setup.ts` | Vitest setup: jest-dom matchers, jsdom API stubs, cleanup + storage reset. |
 | `test/whaatever.test.tsx` | Smoke suite: boot + SEO head + seed, anonymous publish, upvote persistence, comment persistence, Anonymous-Only filter. |
+
+## Deployment
+
+| File | Purpose |
+| --- | --- |
+| `DEPLOY.md` | Step-by-step Vercel setup. **Key point:** Vercel deploys the production branch (`main`), so PR #1 must be merged — or the Vercel Production Branch must be set to `arena/b38874bd-whaatever` — before the app is live. |
+| `npm run verify:deploy` | Reproduces the deployment checks locally: Vercel routing validation, request simulation against `dist/`, crawler/social asset checks, SEO payload checks, sitemap/robots cross-check. Prints `✅ DEPLOY-READY — 64/64 checks passed` when the deployment will work. |
 
 ## Build output
 

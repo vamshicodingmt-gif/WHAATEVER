@@ -1,0 +1,42 @@
+name: CI
+
+# Type checking and tests live here rather than in `npm run build`, so that the
+# Vercel build can never fail because a dev-only tool is missing — while merges
+# are still gated on the full check suite.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Typecheck · Test · Build · Deploy preflight
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build for production
+        run: npm run build
+
+      - name: Vercel deploy preflight
+        run: npm run verify:deploy

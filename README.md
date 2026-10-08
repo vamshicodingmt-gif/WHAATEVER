@@ -18,7 +18,7 @@ Explicit language, unfiltered thoughts and raw expression are fully allowed.
 5. [Technical SEO architecture](#technical-seo-architecture)
 6. [Project structure](#project-structure)
 7. [Getting started](#getting-started)
-8. [Deploying to Vercel](#deploying-to-vercel)
+8. [Deploying to Vercel](#deploying-to-vercel) — **see also [DEPLOY.md](./DEPLOY.md)**
 9. [Data model & localStorage keys](#data-model--localstorage-keys)
 10. [Testing](#testing)
 11. [Accessibility & performance notes](#accessibility--performance-notes)
@@ -163,6 +163,12 @@ WHAATEVER/
 ├── tailwind.config.js          # Brutalist palette, shadow tokens, keyframes
 ├── postcss.config.js
 ├── tsconfig.json
+├── vitest.config.ts            # Test config kept apart from the production build
+├── .nvmrc                      # Node 20 — pins the Vercel build image
+├── DEPLOY.md                   # Vercel runbook + error troubleshooting table
+├── scripts/
+│   └── verify-deploy.mjs       # Vercel config validation + dist/routing simulation
+├── .github/workflows/ci.yml    # Typecheck → test → build → deploy preflight
 ├── public/
 │   ├── robots.txt              # Crawler directives → sitemap
 │   ├── sitemap.xml             # Route index for WHAATEVER.VERCEL.APP
@@ -214,23 +220,76 @@ WHAATEVER/
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173  (bound to 0.0.0.0, safe for proxied previews)
-npm run build      # tsc --noEmit && vite build  →  dist/
-npm run preview    # serve the production build on http://localhost:4173
-npm run typecheck  # strict TypeScript only
-npm run test       # vitest run
+npm run dev            # http://localhost:5173  (bound to 0.0.0.0, safe for proxied previews)
+npm run build          # vite build  →  dist/   (deploy-safe: no test/type tooling required)
+npm run preview        # serve the production build on http://localhost:4173
+npm run typecheck      # tsc --noEmit
+npm run test           # vitest run
+npm run verify:deploy  # Vercel config validation + dist/ routing simulation (64 checks)
+npm run verify         # typecheck → test → build → verify:deploy   (the full gate)
 ```
 
-Requires Node 18+. The build performs a full type check first, so `npm run build` doubles as the CI gate.
+Requires Node 18.18+/20.9+ (pinned to Node 20 by `.nvmrc`).
+
+> **Why `build` is only `vite build`:** so a Vercel build can never fail because a dev-only tool is unavailable.
+> Type checking and tests still gate every change — they run in `npm run verify` locally and in
+> `.github/workflows/ci.yml` on every push and pull request.
 
 ## Deploying to Vercel
 
-1. Import the repository into Vercel (Framework preset: **Vite** — detected automatically).
-2. Build command `npm run build`, output directory `dist` (already declared in `vercel.json`).
-3. Deploy. `vercel.json` handles the SPA rewrite, immutable long-cache for `/assets/*`, and
-   `X-Content-Type-Options` / `X-Frame-Options` / `Referrer-Policy` / `Permissions-Policy` headers.
+> **Read [DEPLOY.md](./DEPLOY.md) for the full runbook and a Vercel error-message troubleshooting table.**
 
-Nothing else is required — there are no environment variables, no API keys and no database to provision.
+### The one thing that breaks a first deploy
+
+Vercel deploys the repository's **production branch** (`main` by default). This application lives on
+`arena/b38874bd-whaatever` and reaches `main` through **[PR #1](https://github.com/vamshicodingmt-gif/WHAATEVER/pull/1)**.
+If Vercel was connected while `main` still held only a `README.md`, the build had no `package.json`, no Vite app and no
+output directory — which surfaces as:
+
+```
+Error: No Output Directory named "public" found after the Build completed.
+```
+
+Fix it either way:
+
+| Option | Action |
+| --- | --- |
+| **A** | **Merge PR #1** into `main`. Vercel redeploys `main` automatically. |
+| **B** | Vercel → **Settings → Git → Production Branch** → `arena/b38874bd-whaatever` → **Save** → **Redeploy**. |
+
+### Project settings
+
+| Setting | Value |
+| --- | --- |
+| Framework Preset | **Vite** (auto-detected; also declared in `vercel.json`) |
+| Root Directory | `.` |
+| Install Command | `npm install` |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Node.js Version | 20.x (via `.nvmrc`) |
+| Deployment Protection | **off** for the production domain |
+
+All of the above is committed in `vercel.json`, so a clean import needs no manual configuration:
+
+* **SPA rewrite** — `{"source": "/(.*)", "destination": "/index.html"}`. Vercel checks the filesystem first, so
+  `/assets/*`, `/robots.txt`, `/sitemap.xml` and `/og-image.png` are served directly while `/trending`, `/about`,
+  `/guidelines`, `/privacy` and `/#post-<id>` fall through to the app shell instead of 404-ing.
+* **Caching + MIME headers** — immutable `/assets/*`, correct types for `sitemap.xml` and `site.webmanifest`.
+* **Security headers** — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`.
+
+### Deployment hardening applied
+
+| Risk | Mitigation |
+| --- | --- |
+| Build failing on a missing dev-only tool | `build` = `vite build`; `vite.config.ts` imports only from `vite`; vitest config lives in `vitest.config.ts` |
+| Invalid routing config rejected at deploy time | `vercel.json` uses only canonical patterns and is validated by `npm run verify:deploy` using **Vercel's own** `@vercel/routing-utils` |
+| Deep links 404-ing on refresh | Catch-all rewrite to `index.html`, verified by simulating the routing table against the real `dist/` |
+| Missing crawler/social assets in production | `verify:deploy` asserts every required file exists in `dist/` and every asset referenced by `index.html` resolves |
+| Node version drift on the build image | `.nvmrc` (Node 20) + `engines` in `package.json` |
+| Regressions reaching production | `.github/workflows/ci.yml` runs typecheck → tests → build → deploy preflight on every push and PR |
+
+For hosts other than Vercel, drag `dist/` anywhere that serves root-relative files **and** rewrites unknown paths to
+`/index.html` (Netlify: `/*  /index.html  200`).
 
 ## Data model & localStorage keys
 
