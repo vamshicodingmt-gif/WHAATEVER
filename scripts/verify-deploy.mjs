@@ -76,6 +76,17 @@ if (!existsSync(DIST)) {
     'apple-touch-icon.png',
   ];
 
+  // Deep links must exist as REAL static files, so they never depend on a
+  // hosting-level SPA rewrite (which proved unreliable in production).
+  const sitemapSource = readFileSync(resolve(DIST, 'sitemap.xml'), 'utf8');
+  const sitemapPaths = [...sitemapSource.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map(([, url]) => url.trim().replace(ORIGIN, '').replace(/\/+$/, ''))
+    .filter((path) => path.length > 0 && path !== '/');
+
+  for (const route of sitemapPaths) {
+    requiredFiles.push(`${route.replace(/^\//, '')}.html`);
+  }
+
   for (const file of requiredFiles) {
     const path = resolve(DIST, file);
     if (existsSync(path) && statSync(path).size > 0) {
@@ -175,10 +186,19 @@ function resolveRequest(pathname) {
 const deepLinks = ['/', '/trending', '/about', '/guidelines', '/privacy'];
 for (const route of deepLinks) {
   const result = resolveRequest(route);
-  if (result.status === 200 && result.served === '/index.html') {
+  const expectedPrerendered = route === '/' ? null : `${route}.html`;
+
+  if (result.status !== 200) {
+    fail(`GET ${route} → ${result.status}`, 'Deep links must resolve to the app shell');
+    continue;
+  }
+
+  if (expectedPrerendered && result.served === expectedPrerendered) {
+    pass(`GET ${route} → 200 ${result.served} (prerendered static file — no rewrite needed)`);
+  } else if (result.served === '/index.html') {
     pass(`GET ${route} → 200 index.html (${result.via})`);
   } else {
-    fail(`GET ${route} → ${result.status}`, 'Deep links must fall through to index.html');
+    fail(`GET ${route} → 200 but served ${result.served}`, `Expected ${expectedPrerendered ?? '/index.html'}`);
   }
 }
 
@@ -280,10 +300,23 @@ console.log('\n[6/6] Deployment preflight');
 
 const pkg = readJson(resolve(ROOT, 'package.json'));
 
-if (pkg.scripts?.build === 'vite build') {
-  pass('build script is `vite build` (no dependency on test tooling)');
+const buildScript = pkg.scripts?.build ?? '';
+
+// The build must never depend on test/type tooling being installed on the build
+// image (Vercel installs production dependencies first). Plain Node scripts are
+// fine — they ship with Node itself.
+if (/\b(tsc|vitest|jest|eslint)\b/.test(buildScript)) {
+  fail(`build script depends on dev-only tooling: "${buildScript}"`, 'Vercel may not have it installed');
+} else if (buildScript.includes('vite build')) {
+  pass(`build script is deploy-safe: "${buildScript}"`);
 } else {
-  fail(`build script should be "vite build" so it cannot fail on missing dev tooling (found "${pkg.scripts?.build}")`);
+  fail(`build script does not run vite build (found "${buildScript}")`);
+}
+
+if (buildScript.includes('prerender-routes.mjs')) {
+  pass('build prerenders static route files for deep links');
+} else {
+  warn('build does not prerender route files — deep links depend entirely on the SPA rewrite');
 }
 
 if (existsSync(resolve(ROOT, 'node_modules'))) pass('node_modules present (dependencies installed)');
