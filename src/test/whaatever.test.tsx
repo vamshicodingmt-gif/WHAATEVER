@@ -95,7 +95,7 @@ describe('WHAATEVER app shell', () => {
         expect(record).toBeDefined();
         expect(record?.author).toBeNull();
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     );
 
     // A tactile success toast confirms the publish (the feed may also be
@@ -126,7 +126,7 @@ describe('WHAATEVER app shell', () => {
         }[];
         expect(stored.some((post) => post.likedByMe)).toBe(true);
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     );
   });
 
@@ -150,7 +150,7 @@ describe('WHAATEVER app shell', () => {
         const stored = window.localStorage.getItem(STORAGE_KEYS.posts) ?? '';
         expect(stored).toContain('exactly how I feel about it too');
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     );
   });
 

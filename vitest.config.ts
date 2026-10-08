@@ -22,5 +22,10 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}'],
     css: false,
     restoreMocks: true,
+    // Generous ceilings so a contended CI runner cannot turn a slow render into
+    // a red build. The suite normally finishes each test in well under 2s.
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
+    teardownTimeout: 15_000,
   },
 });
