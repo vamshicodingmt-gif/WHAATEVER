@@ -74,9 +74,18 @@ a single field — Vercel reads the file on every deploy.
 }
 ```
 
-The catch-all rewrite is the canonical Vercel SPA pattern: Vercel checks the filesystem **first**, so real files
-(`/assets/*.js`, `/robots.txt`, `/sitemap.xml`, `/og-image.png`, …) are served directly, and only unmatched paths fall
-through to `index.html` where the client-side router takes over.
+**Two layers of protection for deep links:**
+
+1. **Prerendered route files (primary).** `scripts/prerender-routes.mjs` runs as part of `npm run build` and writes a real
+   HTML file for every route listed in `public/sitemap.xml` — `dist/trending.html`, `dist/about.html`,
+   `dist/guidelines.html`, `dist/privacy.html`. With `cleanUrls: true`, Vercel serves `/trending` directly from
+   `trending.html` as a plain static file, so deep links work **without depending on any rewrite**. This is also better
+   for crawlers: each route is a real, indexable URL.
+2. **Catch-all SPA rewrite (fallback).** `{ "source": "/(.*)", "destination": "/index.html" }` covers anything else, so
+   unknown paths render the app (which shows the 404 route) instead of a hosting error page.
+
+Vercel checks the filesystem **first**, so real files (`/assets/*.js`, `/robots.txt`, `/sitemap.xml`, `/og-image.png`, …)
+are always served directly.
 
 ---
 
@@ -109,7 +118,8 @@ A clean run prints `✅ DEPLOY-READY — 64/64 checks passed`.
 | --- | --- | --- |
 | `No Output Directory named "public" found after the Build completed` | Vercel deployed a branch without the app (usually `main` = README only) | Merge PR #1, or set **Production Branch** to `arena/b38874bd-whaatever` |
 | `404: NOT_FOUND` on `/` and everything else | No output, or `outputDirectory` not set to `dist` | Confirm Build Command `npm run build`, Output Directory `dist`, Root Directory `.` |
-| Site loads at `/` but **404s on refresh** at `/trending` | `vercel.json` missing on the deployed branch, or rewrites not applied | Make sure `vercel.json` is committed on that branch; re-run `npm run verify:deploy` |
+| Site loads at `/` but **404s at `/trending`**, while `/robots.txt` and `/sitemap.xml` still work | The hosting-level SPA rewrite is not being applied to this deployment | Already handled — deep links no longer depend on the rewrite. `scripts/prerender-routes.mjs` ships real `trending.html` / `about.html` / `guidelines.html` / `privacy.html` files, served via `cleanUrls`. Confirm `npm run build` logs `✔ prerender-routes: 4 static route file(s) written` |
+| A page 404s that definitely exists | Stale edge cache from an earlier (empty) deployment | Add `?cb=1` to confirm; it clears on the next deployment, or force it via **Deployments → Redeploy** |
 | Build log: `Cannot find module 'vitest/config'` | Build-time import of test tooling with dev dependencies unavailable | Already fixed — `vite.config.ts` imports only from `vite`, and `vitest.config.ts` is separate |
 | Build log: `sh: tsc: command not found` | Type checking was part of the build command | Already fixed — `build` is just `vite build`; type checking runs in `npm run typecheck` and in CI |
 | Build log: `npm ERR! code ERESOLVE` | Peer-dependency conflict | `package-lock.json` is committed and in sync — use `npm ci` locally to confirm |

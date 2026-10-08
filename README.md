@@ -56,8 +56,11 @@ Browser ──▶ index.html (static SEO payload + noscript fallback)
 
 * **No server render step.** `npm run build` emits plain HTML, CSS and JS into `dist/`.
 * **No backend.** Nothing in `src/` performs a network request — not for posts, not for images, not for analytics.
-* **Deep links work.** `vercel.json` rewrites every non-asset path to `/index.html`, so `/trending`, `/about`,
-  `/guidelines`, `/privacy` and `/#post-<id>` all resolve on a hard refresh.
+* **Deep links work — twice over.** `scripts/prerender-routes.mjs` emits a real HTML file per sitemap route
+  (`dist/trending.html`, `dist/about.html`, …) served via `cleanUrls`, and a catch-all SPA rewrite in `vercel.json`
+  covers everything else. `/trending`, `/about`, `/guidelines`, `/privacy` and `/#post-<id>` all survive a hard refresh.
+* **Prerendered route files are also better SEO:** each route is a real, independently indexable URL rather than a
+  rewrite into a single document.
 * **Graceful degradation.** `index.html` ships hardcoded meta tags and a semantic `<noscript>` document, so crawlers
   that never execute JavaScript still receive the full keyword payload and a crawlable internal link mesh.
 * **Corruption-proof storage.** Every `localStorage` read is validated and coerced; a hand-edited or truncated key
@@ -283,7 +286,8 @@ All of the above is committed in `vercel.json`, so a clean import needs no manua
 | --- | --- |
 | Build failing on a missing dev-only tool | `build` = `vite build`; `vite.config.ts` imports only from `vite`; vitest config lives in `vitest.config.ts` |
 | Invalid routing config rejected at deploy time | `vercel.json` uses only canonical patterns and is validated by `npm run verify:deploy` using **Vercel's own** `@vercel/routing-utils` |
-| Deep links 404-ing on refresh | Catch-all rewrite to `index.html`, verified by simulating the routing table against the real `dist/` |
+| Deep links 404-ing on refresh | Prerendered static route files (`trending.html`, `about.html`, …) **plus** a catch-all rewrite fallback, both verified against the real `dist/` |
+| Hosting-level rewrite silently not applied | Removed as a single point of failure: every indexable route is a real file, so the site works even if rewrites are ignored |
 | Missing crawler/social assets in production | `verify:deploy` asserts every required file exists in `dist/` and every asset referenced by `index.html` resolves |
 | Node version drift on the build image | `.nvmrc` (Node 20) + `engines` in `package.json` |
 | Regressions reaching production | `.github/workflows/ci.yml` runs typecheck → tests → build → deploy preflight on every push and PR |
