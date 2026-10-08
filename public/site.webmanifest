@@ -1,0 +1,41 @@
+{
+  "name": "WHAATEVER — Anonymous Posting Platform",
+  "short_name": "WHAATEVER",
+  "description": "The ultimate anonymous posting platform, online confession board and unfiltered micro-blogging community. Post instantly with zero logins required.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FACC15",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["social", "lifestyle", "entertainment"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Read the live anonymous feed",
+      "short_name": "Live feed",
+      "url": "/"
+    },
+    {
+      "name": "Trending anonymous posts",
+      "short_name": "Trending",
+      "url": "/trending"
+    }
+  ]
+}

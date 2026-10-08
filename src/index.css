@@ -1,0 +1,353 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   WHAATEVER — High-End New Brutalism design system
+   --------------------------------------------------------------------------
+   Dominant base ....... Crisp White (#FFFFFF) + heavy black borders
+   Primary accent ...... Electric Cobalt Blue (#2563EB)
+   Vibrant highlight ... Mango / Lemon Yellow (#FACC15 / #FEF08A)
+   Earthy grounding .... Olive Green (#65A30D / #4D7C0F) + Warm Beige (#F5F5DC / #FDFBF7)
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --ink: #0a0a0a;
+    --cobalt: #2563eb;
+    --lemon: #facc15;
+    --lemon-soft: #fef08a;
+    --olive: #65a30d;
+    --olive-deep: #4d7c0f;
+    --beige: #f5f5dc;
+    --cream: #fdfbf7;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 7.5rem;
+  }
+
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+    /* A barely-there structural grid stops the white from feeling sterile. */
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 10, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.045) 1px, transparent 1px);
+    background-size: 34px 34px;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  body[data-scroll-locked='true'] {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: var(--lemon);
+    color: #000;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-display uppercase;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--cobalt);
+    outline-offset: 3px;
+  }
+
+  /* Chunky brutalist scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #0a0a0a transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--beige);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--ink);
+    border: 2px solid var(--beige);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--cobalt);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------- surfaces */
+  .brutal-card {
+    @apply border-3 border-black bg-white shadow-brutal;
+  }
+
+  .brutal-card-lg {
+    @apply border-4 border-black bg-white shadow-brutal-lg;
+  }
+
+  .brutal-card-flat {
+    @apply border-3 border-black bg-white;
+  }
+
+  .brutal-panel {
+    @apply border-3 border-black bg-cream shadow-brutal;
+  }
+
+  .brutal-hover {
+    @apply transition-transform duration-150 ease-out hover:-translate-y-1 hover:shadow-brutal-lg;
+  }
+
+  /* --------------------------------------------------------------- push-down */
+  /* The signature New Brutalist micro-interaction: the element physically
+     travels into its own shadow when pressed. */
+  .push {
+    @apply transition-[transform,box-shadow,background-color,color] duration-100 ease-out;
+  }
+
+  .push:hover {
+    @apply -translate-y-0.5;
+  }
+
+  .push:active {
+    transform: translate(4px, 4px) !important;
+    box-shadow: none !important;
+  }
+
+  /* ---------------------------------------------------------------- buttons */
+  .btn {
+    @apply push inline-flex select-none items-center justify-center gap-2 border-3 border-black px-4 py-2.5 text-sm font-black uppercase tracking-wide shadow-brutal disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs shadow-brutal-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3.5 text-base shadow-brutal-lg;
+  }
+
+  .btn-cobalt {
+    @apply bg-cobalt-600 text-white hover:bg-cobalt-700;
+  }
+
+  .btn-lemon {
+    @apply bg-lemon-400 text-ink hover:bg-lemon-300;
+  }
+
+  .btn-olive {
+    @apply bg-olive-600 text-white hover:bg-olive-700;
+  }
+
+  .btn-white {
+    @apply bg-white text-ink hover:bg-beige;
+  }
+
+  .btn-beige {
+    @apply bg-beige text-ink hover:bg-beige-deep;
+  }
+
+  .btn-ink {
+    @apply bg-ink text-white hover:bg-ink-soft;
+  }
+
+  .btn-danger {
+    @apply bg-danger text-white hover:bg-danger-dark;
+  }
+
+  /* ------------------------------------------------------------------- tags */
+  .badge {
+    @apply inline-flex items-center gap-1 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase tracking-widest;
+  }
+
+  .badge-lemon {
+    @apply border-black bg-lemon-400 text-ink;
+  }
+
+  .badge-cobalt {
+    @apply border-black bg-cobalt-600 text-white;
+  }
+
+  .badge-olive {
+    @apply border-black bg-olive-600 text-white;
+  }
+
+  .badge-beige {
+    @apply border-black bg-beige text-ink;
+  }
+
+  .badge-ink {
+    @apply border-black bg-ink text-white;
+  }
+
+  /* ----------------------------------------------------------------- fields */
+  .field {
+    @apply w-full border-3 border-black bg-white px-4 py-3 font-medium text-ink placeholder:text-ink-light focus:outline-none focus:shadow-brutal-cobalt;
+  }
+
+  .field:focus {
+    @apply outline-none;
+  }
+
+  /* -------------------------------------------------------------- utilities */
+  .link-brutal {
+    @apply font-bold underline decoration-2 decoration-cobalt-600 underline-offset-4 transition-colors hover:bg-lemon-200 hover:decoration-ink;
+  }
+
+  .rule {
+    @apply h-1 w-full bg-ink;
+  }
+
+  .hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(10, 10, 10, 0.9) 0px,
+      rgba(10, 10, 10, 0.9) 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+
+  .hatch-cobalt {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(37, 99, 235, 0.9) 0px,
+      rgba(37, 99, 235, 0.9) 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+
+  .dots {
+    background-image: radial-gradient(rgba(10, 10, 10, 0.28) 1.4px, transparent 1.4px);
+    background-size: 12px 12px;
+  }
+
+  .sticker {
+    @apply inline-block border-3 border-black px-3 py-1 shadow-brutal-sm;
+  }
+
+  .tilt-left {
+    transform: rotate(-1.1deg);
+  }
+
+  .tilt-right {
+    transform: rotate(1.1deg);
+  }
+
+  /* -------------------------------------------------------------- skeletons */
+  .skeleton {
+    @apply relative overflow-hidden bg-beige;
+  }
+
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* ---------------------------------------------------------------- masonry */
+  .masonry {
+    column-gap: 1.5rem;
+    column-fill: balance;
+  }
+
+  .masonry > * {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
+  /* --------------------------------------------------------------- marquee */
+  .marquee-mask {
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  /* -------------------------------------------------------------- prose-ish */
+  .rich-text {
+    @apply whitespace-pre-wrap break-words text-[15px] leading-relaxed sm:text-base;
+    overflow-wrap: anywhere;
+  }
+}
+
+@layer utilities {
+  .text-shadow-brutal {
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 1);
+  }
+
+  .text-shadow-cobalt {
+    text-shadow: 3px 3px 0 var(--cobalt);
+  }
+
+  .text-shadow-lemon {
+    text-shadow: 3px 3px 0 var(--lemon);
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 2px #0a0a0a;
+    color: transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .grid-paper {
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 10, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
